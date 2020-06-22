@@ -3,7 +3,6 @@ import './App.css'
 import { GoogleMap, LoadScript } from '@react-google-maps/api'
 
 const baseUrl = 'http://localhost:8000/weather'
-let timeout = null
 
 // function to dynamically provide arguments to fetch
 async function fetchData (url, method, header, body) {
@@ -188,12 +187,6 @@ function App () {
       <input
         type='Number'
         id='Low Temp'
-        // onChange={event => {
-        //   document.getElementById('Low Temp').setAttribute('value', event.target.value)
-        //   console.log(document.getElementById('Low Temp'))
-        //   setLowTemp(Number(event.target.value))
-
-        // }}
       />
     </div>
   )
@@ -204,13 +197,6 @@ function App () {
       <input
         type='Number'
         id='High Temp'
-        // onKeyUp={event => {
-        //   clearTimeout(timeout)
-        //   timeout = setTimeout(function () {
-        //     setHighTemp(Number(event.target.value))
-        //   }, 1000)
-        //   event.persist()
-        // }}
       />
     </div>
   )
