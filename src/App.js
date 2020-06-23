@@ -1,41 +1,9 @@
 import React, { useState } from 'react'
 import './App.css'
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'
+import { structureData, createTempStr } from './helper/helper'
 
 const baseUrl = 'http://localhost:8000/weather'
-
-const structureData = result => {
-  const mappedData = {}
-  result.data.forEach(element => {
-    if (mappedData[element.name]) {
-      mappedData[element.name].data.push({
-        dateStr: element.dateString,
-        temp: element.temp
-      })
-    } else {
-      mappedData[element.name] = {
-        location: element.name,
-        lat: element.lat,
-        long: element.long,
-        data: [{ dateStr: element.dateString, temp: element.temp }]
-      }
-    }
-  })
-  const dataArr = []
-  for (const location in mappedData) {
-    dataArr.push(mappedData[location])
-  }
-  return dataArr
-}
-
-const createTempStr = data => {
-  let tempStr = ''
-  data.forEach(tempInfo => {
-    tempStr = tempStr + tempInfo.dateStr + ' : ' + tempInfo.temp + '\xB0 C\r\n'
-  })
-  console.log(tempStr)
-  return tempStr
-}
 
 // function to dynamically provide arguments to fetch
 async function fetchData (url, method, header, body) {
@@ -50,6 +18,9 @@ async function fetchData (url, method, header, body) {
 }
 
 function App () {
+  const [filter, setFilter] = useState(0)
+  const [marker, setMarker] = useState(null)
+
   const MapContainer = () => {
     const mapStyles = {
       height: '100vh',
@@ -65,7 +36,7 @@ function App () {
       <LoadScript googleMapsApiKey='AIzaSyCFj_B1Ic6pv9uB7OQlLU6OOa9gvdRlJus'>
         <GoogleMap
           mapContainerStyle={mapStyles}
-          zoom={13}
+          zoom={7}
           center={defaultCenter}
         >
           {marker === null
@@ -76,7 +47,6 @@ function App () {
                   position={{ lat: marker.lat, lng: marker.long }}
                   key={i}
                   title={createTempStr(marker.data)}
-                  // `Temperature: ${marker.temp}\xB0 C`
                 />
               )
             })}
@@ -84,8 +54,7 @@ function App () {
       </LoadScript>
     )
   }
-  const [filter, setFilter] = useState(0)
-  const [marker, setMarker] = useState(null)
+
   const filteredFields = filter => {
     if (filter === 0) {
       return (
@@ -122,63 +91,10 @@ function App () {
       )
     }
   }
+
   const Date = () => (
     <input type='date' id='date' min='2020-06-22' max='2020-06-27' />
   )
-  const SubmitButton = () => (
-    <input
-      type='submit'
-      onClick={async event => {
-        const lowTemp = document.getElementById('Low Temp').value
-        const highTemp = document.getElementById('High Temp').value
-        if (filter === 0) {
-          const time = document.getElementById('Time').value
-          const location = document.getElementById('location').value
-          const appendZero = time.length === 1 ? '0' : ''
-          const dateStr =
-            document.getElementById('date').value +
-            ' ' +
-            appendZero +
-            time +
-            ':00:00'
-          const url = `/info/${dateStr}/${location}/${lowTemp}/${highTemp}`
-          const response = await fetchData(
-            baseUrl + url,
-            'get',
-            'application/json'
-          )
-          const result = await response.json()
-          const mappedData = structureData(result)
-          setMarker(mappedData)
-        }
-        if (filter === 1) {
-          const time = document.getElementById('Time').value
-          const url = `/location/${time}/${lowTemp}/${highTemp}`
-          const response = await fetchData(
-            baseUrl + url,
-            'get',
-            'application/json'
-          )
-          const result = await response.json()
-          const mappedData = structureData(result)
-          setMarker(mappedData)
-        }
-        if (filter === 2) {
-          const location = document.getElementById('location').value
-          const url = `/time/${location}/${lowTemp}/${highTemp}`
-          const response = await fetchData(
-            baseUrl + url,
-            'get',
-            'application/json'
-          )
-          const result = await response.json()
-          const mappedData = structureData(result)
-          setMarker(mappedData)
-        }
-      }}
-    />
-  )
-
   const FilterField = () => (
     <div id='filter'>
       <label for='Filter'>Filter: </label>
@@ -238,6 +154,59 @@ function App () {
       <label for='High Temp'>High temp: </label>
       <input type='Number' id='High Temp' />
     </div>
+  )
+  const SubmitButton = () => (
+    <input
+      type='submit'
+      onClick={async event => {
+        const lowTemp = document.getElementById('Low Temp').value
+        const highTemp = document.getElementById('High Temp').value
+        if (filter === 0) {
+          const time = document.getElementById('Time').value
+          const location = document.getElementById('location').value
+          const appendZero = time.length === 1 ? '0' : ''
+          const dateStr =
+            document.getElementById('date').value +
+            ' ' +
+            appendZero +
+            time +
+            ':00:00'
+          const url = `/info/${dateStr}/${location}/${lowTemp}/${highTemp}`
+          const response = await fetchData(
+            baseUrl + url,
+            'get',
+            'application/json'
+          )
+          const result = await response.json()
+          const mappedData = structureData(result)
+          setMarker(mappedData)
+        }
+        if (filter === 1) {
+          const time = document.getElementById('Time').value
+          const url = `/location/${time}/${lowTemp}/${highTemp}`
+          const response = await fetchData(
+            baseUrl + url,
+            'get',
+            'application/json'
+          )
+          const result = await response.json()
+          const mappedData = structureData(result)
+          setMarker(mappedData)
+        }
+        if (filter === 2) {
+          const location = document.getElementById('location').value
+          const url = `/time/${location}/${lowTemp}/${highTemp}`
+          const response = await fetchData(
+            baseUrl + url,
+            'get',
+            'application/json'
+          )
+          const result = await response.json()
+          const mappedData = structureData(result)
+          setMarker(mappedData)
+        }
+      }}
+    />
   )
 
   return (
