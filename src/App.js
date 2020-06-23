@@ -44,39 +44,36 @@ function App () {
   }
 
   const filteredFields = filter => {
-    if (filter === 0) {
-      return (
-        <div id='container'>
-          <LocationField />
-          <Date />
-          <TimeField />
-          <LowTempField />
-          <HighTempField />
-          <SubmitButton />
-        </div>
-      )
-    }
-
-    if (filter === 1) {
-      return (
-        <div id='container'>
-          <TimeField />
-          <LowTempField />
-          <HighTempField />
-          <SubmitButton />
-        </div>
-      )
-    }
-
-    if (filter === 2) {
-      return (
-        <div id='container'>
-          <LocationField />
-          <LowTempField />
-          <HighTempField />
-          <SubmitButton />
-        </div>
-      )
+    switch (filter) {
+      case 0:
+        return (
+          <div id='container'>
+            <LocationField />
+            <Date />
+            <TimeField />
+            <LowTempField />
+            <HighTempField />
+            <SubmitButton />
+          </div>
+        )
+      case 1:
+        return (
+          <div id='container'>
+            <TimeField />
+            <LowTempField />
+            <HighTempField />
+            <SubmitButton />
+          </div>
+        )
+      case 2:
+        return (
+          <div id='container'>
+            <LocationField />
+            <LowTempField />
+            <HighTempField />
+            <SubmitButton />
+          </div>
+        )
     }
   }
 
