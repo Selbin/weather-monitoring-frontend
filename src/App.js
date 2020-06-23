@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'
 import { structureData, createTempStr, fetchData } from './helper/helper'
@@ -80,9 +80,40 @@ function App () {
     }
   }
 
-  const Date = () => (
-    <input type='date' id='date' min='2020-06-22' max='2020-06-27' />
-  )
+  const Date = () => {
+    const [dateRange, setDateRange] = useState(null)
+    useEffect(() => {
+      const call = async () => {
+        const url = '/getDateRange'
+        try {
+          const result = await fetchData(
+            baseUrl + url,
+            'get',
+            'application/json'
+          )
+          const data = await result.json()
+          console.log(data.data)
+          setDateRange(data.data)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      call()
+    }
+    , [])
+    if (dateRange) {
+      return (
+        <input
+          type='date'
+          id='date'
+          min={dateRange.startDate}
+          max={dateRange.endDate}
+        />
+      )
+    }
+    return 'loading'
+  }
+
   const FilterField = () => (
     <div id='filter'>
       <label for='Filter'>Filter: </label>
