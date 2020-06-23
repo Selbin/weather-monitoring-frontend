@@ -1,21 +1,9 @@
 import React, { useState } from 'react'
 import './App.css'
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'
-import { structureData, createTempStr } from './helper/helper'
+import { structureData, createTempStr, fetchData } from './helper/helper'
 
 const baseUrl = 'http://localhost:8000/weather'
-
-// function to dynamically provide arguments to fetch
-async function fetchData (url, method, header, body) {
-  const response = await window.fetch(url, {
-    method,
-    headers: {
-      'Content-Type': header
-    },
-    body
-  })
-  return response
-}
 
 function App () {
   const [filter, setFilter] = useState(0)
