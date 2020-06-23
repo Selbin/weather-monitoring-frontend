@@ -33,7 +33,11 @@ const structureData = result => {
 const createTempStr = data => {
   let tempStr = ''
   data.forEach(tempInfo => {
-    tempStr = tempStr + tempInfo.dateStr + ' : ' + tempInfo.temp + '\xB0 C\r\n'
+    const options = {
+      hour12: true
+    }
+    const date = new Date(tempInfo.dateStr)
+    tempStr = tempStr + date.toLocaleString('en-GB', options) + ' : ' + tempInfo.temp + '\xB0 C\r\n'
   })
   return tempStr
 }
