@@ -1,3 +1,7 @@
+/**
+ * @desc for structuring the data
+ * @param {{}} result
+ */
 const structureData = result => {
   const mappedData = {}
   result.data.forEach(element => {
@@ -22,6 +26,10 @@ const structureData = result => {
   return dataArr
 }
 
+/**
+ * @description Take an array as input and returns a string
+ * @param {[]} data
+ */
 const createTempStr = data => {
   let tempStr = ''
   data.forEach(tempInfo => {
@@ -29,4 +37,22 @@ const createTempStr = data => {
   })
   return tempStr
 }
-export { structureData, createTempStr }
+/**
+ * @desc call fetch api
+ * @param {String} url
+ * @param {String} method
+ * @param {String} header
+ * @param {String} body
+ */
+async function fetchData (url, method, header, body) {
+  const response = await window.fetch(url, {
+    method,
+    headers: {
+      'Content-Type': header
+    },
+    body
+  })
+  return response
+}
+
+export { structureData, createTempStr, fetchData }
